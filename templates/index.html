@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>查詢 3+2 郵遞區號</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>查詢 3 + 2 郵遞區號</h1>
+        <br>
+        <form action="/query" method="post">
+            <select name="city" id="city">
+                <option disabled selected value="no">請選擇縣市</option>
+                {% for city in cities %}
+                    <option value="{{city}}">{{ city }}</option>
+                {% endfor%}
+           
+            </select>      
+            <input type="text" name="road" id="road" placeholder="輸入路名或鄉里名稱">
+            <select name="section" id="section">
+                <option selected value=" ">無分段</option>
+                {% for section in sections %}
+                    <option value="{{section}}">{{ section }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="查詢">            
+        </form>
+    </div>
+    <br>
+  
+    {% if rets %}
+    <div class="container">
+        <h2>查詢結果</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>郵遞區號</th>
+                    <th>區域</th>
+                    <th>路名</th>
+                    <th>範圍</th>
+                </tr>                
+            </thead>
+            <tbody>
+                {% for ret in rets %}
+                <tr>
+                    <td> {{ ret['Zip5'] }}</td>        
+                    <td> {{ ret['Area'] }}</td>
+                    <td> {{ ret['Road'] }}</td>
+                    <td> {{ ret['Scope'] }}</td>
+                </tr>
+                {% endfor %}            
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+{% endblock %}
