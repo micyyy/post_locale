@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block head %}
     <title>查詢 3+2 郵遞區號</title>
+    <style>
+        form {
+            float: left;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -11,7 +16,7 @@
             <select name="city" id="city">
                 <option disabled selected value="no">請選擇縣市</option>
                 {% for city in cities %}
-                    <option value="{{city}}">{{ city }}</option>
+                    <option value="{{city}}">{{city}}</option>
                 {% endfor%}
            
             </select>      
@@ -19,17 +24,20 @@
             <select name="section" id="section">
                 <option selected value=" ">無分段</option>
                 {% for section in sections %}
-                    <option value="{{section}}">{{ section }}</option>
+                    <option value="{{section}}">{{section}}</option>
                 {% endfor %}
             </select>
-            <input type="submit" value="查詢">            
+            <input type="submit" value="查詢">
+            <input type="reset" value="清除">
         </form>
     </div>
     <br>
-  
+    <hr>
+   
     {% if rets %}
     <div class="container">
         <h2>查詢結果</h2>
+        <br>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -42,15 +50,31 @@
             <tbody>
                 {% for ret in rets %}
                 <tr>
-                    <td> {{ ret['Zip5'] }}</td>        
-                    <td> {{ ret['Area'] }}</td>
-                    <td> {{ ret['Road'] }}</td>
-                    <td> {{ ret['Scope'] }}</td>
+                    <td> {{ret['Zip5']}}</td>        
+                    <td> {{ret['Area']}}</td>
+                    <td> {{ret['Road']}}</td>
+                    <td> {{ret['Scope']}}</td>
                 </tr>
                 {% endfor %}            
             </tbody>
         </table>
     </div>
     {% endif %}
+    <script>
+        var city = "{{input_city}}";
+        var road = "{{input_road}}";
+        var section = "{{input_section}}";
+        if(city.length>0){
+            document.getElementById('city').value = city;
+        }
+        if(road.length>0){
+            document.getElementById('road').value = road;
+        }
+        if(section.length>0){
+            document.getElementById('section').value = section;
+        }
+        
+    </script>
+   
 
 {% endblock %}
