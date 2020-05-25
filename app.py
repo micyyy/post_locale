@@ -5,19 +5,26 @@ app = Flask(__name__)
 _FILE = 'post_locale.json'
 _datas = list()
 
+
+def file_data_list(filename):
+    datas = list()
+    with open(filename, encoding='UTF-8') as f:
+        datas = f.readlines()
+    return datas
+
+
 def get_cities():
-    with open('cities.dat') as cfile:
-        cities = cfile.readlines()
-    return cities
+    return file_data_list('cities.dat')
+
 
 def get_sections():
-    with open('sections.dat') as cfile:
-        sections = cfile.readlines()
-    return sections
+    return file_data_list('sections.dat')
+
 
 @app.route('/')
 def home():
     return render_template('index.html', cities=get_cities(), sections=get_sections())
+
 
 @app.route('/query', methods=['POST'])
 def query():
@@ -34,7 +41,7 @@ def query():
         if data['City'] in city and data['Road'].find((road.rstrip()+section.rstrip()))>=0:
             rets.append(data)
             match = True
-    
+
     if not match:
         for data in _datas:
             if data['City'] in city and data['Road'].find((road.rstrip()))>=0 and data['Road'].find((section.rstrip()))>=0:            
@@ -42,8 +49,9 @@ def query():
 
     return render_template('index.html', cities=get_cities(), sections=get_sections(), rets=rets, input_city=city, input_road=road, input_section=section)
 
+
 if __name__ == '__main__':
     with open(_FILE) as jfile:
         _datas = json.load(jfile)
-    
+
     app.run(port=15001, debug=True)
