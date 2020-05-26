@@ -6,19 +6,20 @@ _FILE = 'post_locale.json'
 _datas = list()
 
 
-def file_data_list(filename):
+def file_to_list(filename):
     datas = list()
     with open(filename, encoding='UTF-8') as f:
-        datas = f.readlines()
+        for data in f.readlines():
+            datas.append(str(data).rstrip())
     return datas
 
 
 def get_cities():
-    return file_data_list('cities.dat')
+    return file_to_list('cities.dat')
 
 
 def get_sections():
-    return file_data_list('sections.dat')
+    return file_to_list('sections.dat')
 
 
 @app.route('/')
@@ -29,22 +30,22 @@ def home():
 @app.route('/query', methods=['POST'])
 def query():
     match = False
-    city = request.form.get('city')
-    road = request.form.get('road')
-    section = request.form.get('section')
+    city = request.form.get('city').rstrip()
+    road = request.form.get('road').rstrip()
+    section = request.form.get('section').rstrip()
 
     if not city:
         return render_template('index.html', cities=get_cities(), sections=get_sections())
 
     rets = list()
     for data in _datas:
-        if data['City'] in city and data['Road'].find((road.rstrip()+section.rstrip()))>=0:
+        if data['City'].rstrip() in city and data['Road'].find((road.rstrip()+section.rstrip()))>=0:
             rets.append(data)
             match = True
 
     if not match:
         for data in _datas:
-            if data['City'] in city and data['Road'].find((road.rstrip()))>=0 and data['Road'].find((section.rstrip()))>=0:            
+            if data['City'].rstrip() in city and data['Road'].find((road.rstrip()))>=0 and data['Road'].find((section.rstrip()))>=0:            
                 rets.append(data)
 
     return render_template('index.html', cities=get_cities(), sections=get_sections(), rets=rets, input_city=city, input_road=road, input_section=section)
